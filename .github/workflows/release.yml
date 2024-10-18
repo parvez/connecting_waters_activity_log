@@ -1,12 +1,12 @@
 name: Build and Release Binaries
 
 permissions:
-  contents: write
+  contents: write  # Ensure we have write access to create a release
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*'  # Trigger the workflow on tag pushes (e.g., v1.0.0)
 
 jobs:
   build:
@@ -44,11 +44,11 @@ jobs:
       - name: Move the binary to platform-specific dist folder
         run: |
           if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            mv dist/student_log_script dist/ubuntu/student_log_script;
+            mv dist/student_log_script dist/ubuntu/;
           elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
-            mv dist/student_log_script dist/macos/student_log_script;
+            mv dist/student_log_script dist/macos/;
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            mv dist/student_log_script.exe dist/windows/student_log_script.exe;
+            mv dist/student_log_script.exe dist/windows/;
           fi
         shell: bash
 
@@ -66,6 +66,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Ensure dist folder exists before downloading artifacts
       - name: Create dist directories for release
         run: |
           mkdir -p dist/ubuntu
