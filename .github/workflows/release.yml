@@ -54,7 +54,7 @@ jobs:
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}-binary
+          name: latest-binary
           path: |
             dist/ubuntu_student_log_script
             dist/macos_student_log_script
