@@ -36,17 +36,12 @@ jobs:
 
       - name: Build binary with PyInstaller
         run: |
-          pyinstaller --onefile student_log_script.py
-        shell: bash
-
-      - name: Move the binary to platform-specific dist folder
-        run: |
           if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            mv dist/student_log_script dist/ubuntu_student_log_script;
+            pyinstaller --onefile student_log_script.py --name ubuntu_student_log_script
           elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
-            mv dist/student_log_script dist/macos_student_log_script;
+            pyinstaller --onefile student_log_script.py --name macos_student_log_script
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            mv dist/student_log_script.exe dist/student_log_script.exe;
+            pyinstaller --onefile student_log_script.py --name student_log_script.exe
           fi
         shell: bash
 
