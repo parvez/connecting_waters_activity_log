@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v*.*.*'  # Trigger the workflow on tag pushes (e.g., v1.0.0)
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -44,13 +44,16 @@ jobs:
       - name: Move the binary to platform-specific dist folder
         run: |
           if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            mv dist/student_log_script dist/ubuntu/;
+            mv dist/student_log_script dist/ubuntu/student_log_script;
           elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
-            mv dist/student_log_script dist/macos/;
+            mv dist/student_log_script dist/macos/student_log_script;
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            mv dist/student_log_script.exe dist/windows/;
+            mv dist/student_log_script.exe dist/windows/student_log_script.exe;
           fi
         shell: bash
+
+      - name: List dist folder contents (debug step)
+        run: ls -R dist/
 
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
@@ -66,7 +69,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Ensure dist folder exists before downloading artifacts
       - name: Create dist directories for release
         run: |
           mkdir -p dist/ubuntu
@@ -77,19 +79,19 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ubuntu-latest-binary
-          path: ./dist/ubuntu
+          path: dist/ubuntu
 
       - name: Download macOS binary
         uses: actions/download-artifact@v3
         with:
           name: macos-latest-binary
-          path: ./dist/macos
+          path: dist/macos
 
       - name: Download Windows binary
         uses: actions/download-artifact@v3
         with:
           name: windows-latest-binary
-          path: ./dist/windows
+          path: dist/windows
 
       - name: List dist folder contents (debug step)
         run: ls -R dist/
@@ -98,8 +100,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./dist/ubuntu/student_log_script
-            ./dist/macos/student_log_script
-            ./dist/windows/student_log_script.exe
+            dist/ubuntu/student_log_script
+            dist/macos/student_log_script
+            dist/windows/student_log_script.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
