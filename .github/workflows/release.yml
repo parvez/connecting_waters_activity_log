@@ -1,5 +1,7 @@
-# .github/workflows/release.yml
 name: Build and Release Binaries
+
+permissions:
+  contents: write
 
 on:
   push:
@@ -36,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-binary
-          path: dist/student_log_script*  # Adjust the filename as per the OS
+          path: dist/student_log_script*
 
   release:
     needs: build
