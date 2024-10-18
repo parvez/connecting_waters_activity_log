@@ -1,12 +1,12 @@
 name: Build and Release Binaries
 
 permissions:
-  contents: write  # Ensure we have write access to create a release
+  contents: write
 
 on:
   push:
     tags:
-      - 'v*.*.*'  # Trigger the workflow on tag pushes (e.g., v1.0.0)
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -34,6 +34,7 @@ jobs:
           mkdir -p dist/ubuntu
           mkdir -p dist/macos
           mkdir -p dist/windows
+        shell: bash
 
       - name: Build binary with PyInstaller
         run: |
@@ -49,6 +50,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
             mv dist/student_log_script.exe dist/windows/student_log_script.exe;
           fi
+        shell: bash
 
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
@@ -64,7 +66,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Ensure dist folder exists before downloading artifacts
       - name: Create dist directories for release
         run: |
           mkdir -p dist/ubuntu
