@@ -38,15 +38,15 @@ jobs:
         run: |
           if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
             pyinstaller --onefile student_log_script.py --name ubuntu_student_log_script
+            ls -lhaR dist/
           elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
             pyinstaller --onefile student_log_script.py --name macos_student_log_script
+            ls -lhaR dist/
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
             pyinstaller --onefile student_log_script.py --name student_log_script.exe
+            ls -R dist/
           fi
         shell: bash
-
-      - name: List dist folder contents (debug step)
-        run: ls -lhaR dist/
 
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
