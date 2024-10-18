@@ -79,19 +79,19 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ubuntu-latest-binary
-          path: dist/ubuntu
+          path: dist/ubuntu/student_log_script
 
       - name: Download macOS binary
         uses: actions/download-artifact@v3
         with:
           name: macos-latest-binary
-          path: dist/macos
+          path: dist/macos/student_log_script
 
       - name: Download Windows binary
         uses: actions/download-artifact@v3
         with:
           name: windows-latest-binary
-          path: dist/windows
+          path: dist/windows/student_log_script.exe
 
       - name: List dist folder contents (debug step)
         run: ls -R dist/
