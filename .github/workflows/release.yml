@@ -40,17 +40,31 @@ jobs:
           pyinstaller --onefile student_log_script.py
         shell: bash
 
+      - name: Move the binary to platform-specific dist folder
+        run: |
+          if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
+            mv dist/student_log_script dist/ubuntu/student_log_script;
+          elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
+            mv dist/student_log_script dist/macos/student_log_script;
+          elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
+            mv dist/student_log_script.exe dist/windows/student_log_script.exe;
+          fi
+
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-binary
-          path: dist/student_log_script*
+          path: |
+            dist/ubuntu/student_log_script
+            dist/macos/student_log_script
+            dist/windows/student_log_script.exe
 
   release:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      # Ensure dist folder exists before downloading artifacts
       - name: Create dist directories for release
         run: |
           mkdir -p dist/ubuntu
@@ -74,6 +88,9 @@ jobs:
         with:
           name: windows-latest-binary
           path: ./dist/windows
+
+      - name: List dist folder contents (debug step)
+        run: ls -R dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
