@@ -1,7 +1,7 @@
 name: Build and Release Binaries
 
 permissions:
-  contents: write  # Ensure we have write access to create a release
+  contents: write
 
 on:
   push:
@@ -31,9 +31,7 @@ jobs:
 
       - name: Create dist directories if not exist
         run: |
-          mkdir -p dist/ubuntu
-          mkdir -p dist/macos
-          mkdir -p dist/windows
+          mkdir -p dist
         shell: bash
 
       - name: Build binary with PyInstaller
@@ -44,25 +42,25 @@ jobs:
       - name: Move the binary to platform-specific dist folder
         run: |
           if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            mv dist/student_log_script dist/ubuntu/student_log_script;
+            mv dist/student_log_script dist/ubuntu_student_log_script;
           elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
-            mv dist/student_log_script dist/macos/student_log_script;
+            mv dist/student_log_script dist/macos_student_log_script;
           elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            mv dist/student_log_script.exe dist/windows/student_log_script.exe;
+            mv dist/student_log_script.exe dist/student_log_script.exe;
           fi
         shell: bash
 
       - name: List dist folder contents (debug step)
-        run: ls -R dist/
+        run: ls -lhaR dist/
 
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-binary
           path: |
-            dist/ubuntu/student_log_script
-            dist/macos/student_log_script
-            dist/windows/student_log_script.exe
+            dist/ubuntu_student_log_script
+            dist/macos_student_log_script
+            dist/student_log_script.exe
 
   release:
     needs: build
@@ -71,9 +69,7 @@ jobs:
     steps:
       - name: Create dist directories for release
         run: |
-          mkdir -p dist/ubuntu
-          mkdir -p dist/macos
-          mkdir -p dist/windows
+          mkdir -p dist
 
       - name: Download binaries from build jobs
         uses: actions/download-artifact@v3
@@ -94,14 +90,14 @@ jobs:
           path: dist
 
       - name: List dist folder contents (debug step)
-        run: ls -R dist/
+        run: ls -lhaR dist/
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/ubuntu/student_log_script
-            dist/macos/student_log_script
-            dist/windows/student_log_script.exe
+            dist/ubuntu_student_log_script
+            dist/macos_student_log_script
+            dist/student_log_script.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
